@@ -1,0 +1,512 @@
+//written by Morris Alper -- January 2013
+//you may copy with attribution
+
+//Navigation.js: provides functionality for multi-page surveys
+
+var current = 1; //the current page
+
+var moved = []; //pages which have been moved by the randomization
+var movedto = [];
+
+//takes randomization into account
+function effectivePage(pagenum) {
+	var index = moved.indexOf(pagenum);
+	if(index == -1) {
+		return pagenum;
+	}else{
+		return movedto[index];
+	}
+}
+
+var numberText = []; //stores divs which need to be updated when the page changes
+var pntexts = []; //texts in them
+function makePageNumber(text) { //text: something like "Page 1 / 4"
+	var temp = text.split(1);
+	var texts = [temp[0], temp[1]];
+	//the following is needed if there are more 1's (e.g. if the total # of pages contains the digit 1)
+	if(temp.length > 2) {
+		for(var i = 2; i < temp.length; i++) {
+			texts[1] += 1 + temp[i];
+		}
+	}
+	document.writeln("<p><div id='pagenumberdiv" + numberText.length + "'></div></p>");
+	loadPageNumber(("pagenumberdiv" + numberText.length), texts);
+}
+function loadPageNumber(id, texts) {
+	var newone = document.getElementById(id);
+	numberText.push(newone);
+	pntexts.push(texts);
+	updatePageNumbers();
+}
+function updatePageNumbers() {
+	for(var i = 0; i < numberText.length; i++) {
+		numberText[i].innerHTML = pntexts[i][0] + current + pntexts[i][1];
+	}
+}
+
+//make one vanish and the other appear
+function swap(vanish, appear) {
+	document.getElementById(vanish).style.display = "none";
+	//document.getElementById(appear).style.display = "inline";
+	document.getElementById(appear).style.display = "";
+	updatePageNumbers();
+}
+
+//go to the next page
+function next() {
+	current++;
+	swap(effectivePage(current - 1), effectivePage(current));
+}
+
+function back() {
+	current--;
+	swap(effectivePage(current + 1), effectivePage(current));
+}
+
+//shuffles the array
+//taken from http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
+Array.prototype.shuffle = function () {
+    for (var i = this.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = this[i];
+        this[i] = this[j];
+        this[j] = tmp;
+    }
+
+    return this;
+}
+
+//randomize the order of trials i through j
+//note: don't call this on the same index twice!
+function randomize(i, j) {
+	ar = [];
+	ar2 = [];
+	for(var k = i; k <= j; k++) {
+		ar.push(k);
+		ar2.push(k);
+	}
+	ar2.shuffle();
+	for(var k = 0; k < ar.length; k++) {
+		if(moved.indexOf(ar[k]) != -1) {
+			alert("Error: same index randomized twice.");
+		}else{
+			moved.push(ar[k]);
+			movedto.push(ar2[k]);
+		}
+	}
+}
+
+<script>
+randomize(4, 31);
+</script>
+
+<!-- Bootstrap v3.0.3 -->
+<link href="https://s3.amazonaws.com/mturk-public/bs30/css/bootstrap.min.css" rel="stylesheet" />
+<section class="container" id="Survey" style="margin-bottom:15px; padding: 10px 10px; font-family: Verdana, Geneva, sans-serif; color:#333333; font-size:0.9em;">
+<div class="page" div="" id="1">
+<div class="row col-xs-12 col-md-12"><!-- Instructions -->
+<div class="panel panel-primary">
+<div class="panel-heading"><strong>Instructions</strong></div>
+
+<div class="panel-body">
+<p>Enter instructions for your survey:</p>
+
+<ul>
+	<li>Instruction #1</li>
+	<li>Instruction #2</li>
+	<li>Instruction #3</li>
+</ul>
+</div>
+</div>
+<!-- End Instructions --><!-- Survey Body -->
+
+<section>
+<fieldset><label>1. What is your gender? </label>
+
+<div class="radio"><label><input name="Gender" type="radio" value="Male" />Male </label></div>
+
+<div class="radio"><label><input name="Gender" type="radio" value="Female" />Female </label></div>
+</fieldset>
+
+<fieldset>
+<div class="input-group"><label>2. What is your age?</label> <input class="form-control" name="Age" size="120" type="text" /></div>
+</fieldset>
+
+<fieldset><label>3. Which of the following best describes your highest achieved education level? </label> <select class="form-control" name="Education"><option selected="selected" value="select one">- select one -</option><option value="Some High School">Some High School</option><option value="Some college, no degree">Some college, no degree</option><option value="Associates degree">Associates degree</option><option value="Bachelors degree">Bachelors degree</option><option value="Graduate degree (Masters, Doctorate, etc.)">Graduate degree (Masters, Doctorate, etc.)</option></select></fieldset>
+
+<fieldset><label>4. What is the total income of your household? </label>&nbsp;<select class="form-control" name="HouseHoldIncome" size="5"><option>Less than $12,500</option><option>$12,500 - $24,999</option><option>$25,000 - $37,499</option><option>$37,500 - $49,999</option><option>$50,000 - $62,499</option><option>$62,500 - $74,999</option><option>$75,000 - $87,499</option><option>$87,500 - $99,999</option><option>$100,000 or more</option></select></fieldset>
+</section>
+</div>
+</div>
+
+<div class="page" id="2" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<ul class="pager">
+	<li><a href="#2">Next</a></li>
+</ul>
+
+<div class="page" id="3" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="4" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="5" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="6" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="7" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="8" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="9" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="10" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="11" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="12" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="13" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="14" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="15" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="16" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="17" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="18" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="19" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="20" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="21" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="22" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="23" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="24" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="25" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="26" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="27" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<div class="page" id="28" style="display: none;">
+<div class="cell">
+<fieldset><label>Which hexagon is using the most energy? </label>
+
+<p><img width="200" height="200" style="margin-right: 10px;" src="${image_url}"/></p>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Top" />Top </label></div>
+
+<div class="radio"><label><input name="Hexagon" type="radio" value="Bottom" />Bottom </label></div>
+</fieldset>
+</div>
+</div>
+
+<input type="submit" value="Submit" />
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+</section>
+
+<p><!-- End Survey Body --><!-- close container -->
+<style type="text/css">fieldset {
+    padding: 10px;
+    background:#fbfbfb;
+    border-radius:5px;
+    margin-bottom:5px;
+}
+</style>
+</p>
