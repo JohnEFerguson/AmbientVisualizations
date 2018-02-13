@@ -1,0 +1,28 @@
+  double power_sample[20] =
+    {0,0,.2,0,0, // sample
+     .007,2,0,0,0,
+     0,0,0,0,0,
+     0,0,0,0,0};
+double distance(Position a, Position b) { return (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y);}
+bool collided(int i, int j){
+  if (distance(appliances[i]->circle->pos, appliances[j]->circle->pos) < 
+      pow(appliances[i]->circle->radius + appliances[j]->circle->radius, 2) - 1) 
+    return true;
+  else return false;}
+
+void bump2(int i, int j){
+  float temp_dx = appliances[i]->circle->mov.dx;
+  float temp_dy = appliances[i]->circle->mov.dy;
+  appliances[i]->circle->mov.dx = appliances[j]->circle->mov.dx;
+  appliances[i]->circle->mov.dy = appliances[j]->circle->mov.dy;
+  appliances[j]->circle->mov.dx = temp_dx;
+  appliances[j]->circle->mov.dy  = temp_dy;
+}
+void check_circle_collisions(){
+  int i,j;
+  for (i = 0; i < appliances.size(); i++){
+    for (j = i + 1; j < appliances.size(); j++){
+      if (appliances[i]->on && appliances[j]->on && collided(i,j)) bump2(i,j);
+    }
+  }
+}

@@ -1,0 +1,2 @@
+make:
+	g++ -I/usr/include/freetype2 -o circles circle_animation.cpp -lglut -lGL -lcurl -std=c++0x -pthread

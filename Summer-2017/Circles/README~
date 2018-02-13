@@ -1,0 +1,13 @@
+This animation is designed to visualize power and energy usgae of appliances tracked by an egauge, wemo, or zwave device.  The animation is a white background with a colored circle for each appliance.  A circle's apoacity indicates how much power the corresponding appliance is using while a circle's size indicates how much energy the appliance is using.  There are two versions of this animation. In the first version, the size of each circle is determined by how much energy the appliance has used total.  The energy usage of each appliance is directly comparable because the size calculation is the same for each appliance for any given energy value.  In the second version, the size of each circle is determined by the current energy usage of an appliance divided by the maximum amount of energy the appliance could have used in a given interval.  In this version, the person using the visualization is able to evaluate if they have used a reasonable amount of energy or not.
+
+- Makefile: a makefile for the animation
+- LimitValues.csv: contains the maximum power values for the appliances in the Zilkha Center kitchen. (only used in version 2)
+- circle_animation_1.cpp: code for animation (version 1)
+- circle_animation_2.cpp: code for animation (version 2)
+- circles.conf: configuration file used by the animation 
+- readers: the directory containing all of the drivers and interfaces for the various monitoring devices (writtern by Devin Gardella)
+  
+This version 2 of this animation is currently only calibrated for use in the kitchen of the Zilkha Environmental Center at Williams College which is currently being tracked by an egauge device.  In order for the animation to work in a different setting or with a different device, the LimitValues.csv file must be changed so that it has the maximum power values for the appliances being visualized.
+
+To compile, simply call "make" while in the directory.  Run the animation by calling "./circles"
+

@@ -1,0 +1,25 @@
+- get data stream --- got it somewhat
+- get circles to show up randomly but not overlapping
+- change initial vector so that it's more random
+- call render function less frequently
+  - ask morgan about it!!
+  - use translate function for better performance
+- deal with all the stuff we want the circles to do
+- change colors to red gradient
+- change ignores to instance variable
+  - change so that pays attention to ignores when drawing circles
+
+
+- color for each appliance
+- circle grows slowly
+- opacity varies with power
+- find timer that is actually accurate 
+- starting vectors more random
+- make off circles tend towards bottom
+- on click start again
+
+- on_click 
+  - reset energy to 0
+  - change positions 
+  - helps if the circles start to overlap
+  - powered off and still colliding?
