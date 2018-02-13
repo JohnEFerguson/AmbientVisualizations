@@ -1,0 +1,10 @@
+---NOTES---
+
+
+- scale appliances the same way? different thresholds 
+  - we want to express when appliance is using more energy while maintaining actual
+    energy differences between appliances
+
+- continue django framework development!!
+  	   - https://docs.djangoproject.com/en/1.10/intro/tutorial03/
+
