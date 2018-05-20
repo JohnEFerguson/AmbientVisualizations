@@ -1,4 +1,4 @@
-var NUM_HEXAGONS = sim_appliances.length;
+var NUM_HEXAGONS = zilkha_appliances.length;
 var MAX_SIZE = canvas.width/NUM_HEXAGONS;
 var STARTING_SIZE = 30;
 var x = 1;
@@ -25,7 +25,7 @@ for (i = 0; i < NUM_HEXAGONS; i++){
 	positions.splice(ind, 1);
     }
     var hive = new Hive("../../images/hexagons/" + i.toString() + "_hexagon.png", app_positions, STARTING_SIZE);
-    hive.addAppliance(sim_appliances[i]);
+    hive.addAppliance(zilkha_appliances[i]);
     elems.push(hive);
 }
 

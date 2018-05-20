@@ -1,5 +1,10 @@
 function energy_to_size(energy) { return STARTING_SIZE + energy/50  }
-function power_to_density(appliance) { return appliance.get_power()/appliance.get_max_power(); }
+function power_to_density(appliance) { return appliance.get_power()/
+appliance.get_max_power(); }
+function Coordinate(x, y) {
+    this.x = x,
+    this.y = y
+}
 function Hive(path, positions, size){
     this.size = size,
     this.img = new Image(), /* setup the image to draw */

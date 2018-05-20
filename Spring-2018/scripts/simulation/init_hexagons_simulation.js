@@ -4,7 +4,6 @@ var STARTING_SIZE = 30;
 var x = 1;
 var y = 1;
 var over = 10;
-
 positions = new Array();
 
 while (y <= canvas.height+over) {

@@ -2,7 +2,7 @@ function print( text, ID ) {
     document.getElementById( ID ).innerHTML = text;
 }
 
-function Kitchen() {
+function KitchenSim() {
     this.sim_appliances = [new Appliance("fridge"), new Appliance("light"), new Appliance("oven"), new Appliance("rangehood"), new Appliance("toaster")],
     this.get_appliances = function() { return this.sim_appliances; },
     this.switchState = function(appliance) {
@@ -10,7 +10,7 @@ function Kitchen() {
     }
 }
 
-kitchen = new Kitchen();
+kitchen = new KitchenSim();
 sim_appliances = kitchen.get_appliances();
 
 function insertImg( imgSrc, divID, width, height ){
